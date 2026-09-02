@@ -1,0 +1,5 @@
+*.o
+*.out
+sd
+.DS_Store
+.vscode
