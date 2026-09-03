@@ -10,11 +10,31 @@
 int main() {
     srand(time(NULL));
     sf::Clock clickDelay;
+    int cntTurns = 0;
+    sf::Font font("Assets/font.ttf");
+    sf::Text turnsText(font);
+    sf::Text finalScore(font);
+    turnsText.setCharacterSize(30);
+    turnsText.setFillColor(sf::Color::White);
+    turnsText.setPosition({950.f, 100.f});
+    finalScore.setCharacterSize(30);
+    finalScore.setFillColor(sf::Color::White);
+    finalScore.setPosition({300.f, 300.f});
     bool waiting = false;
     int firstCard = -1;
     int firstId = -1;
     int secondId = -1;
     bool win = false;
+    bool gameStart = false;
+    int cntWins = 0;
+    int bestResult = 0;
+    sf::ConvexShape playIcon;
+    playIcon.setPointCount(3);
+    playIcon.setPoint(0, {0.f, 0.f});
+    playIcon.setPoint(1, {0.f, 40.f});
+    playIcon.setPoint(2, {35.f, 20.f});
+    playIcon.setFillColor(sf::Color::White);
+    playIcon.setPosition({565.f, 365.f});
     std::vector<Card> mainVec;
     std::vector<sf::Texture> textures;
     const sf::Texture backside("Textures/backside.png");
@@ -30,6 +50,27 @@ int main() {
 	sf::RenderWindow window(sf::VideoMode({1200,800}),"Pair game");
     while (window.isOpen())
     {
+        if (!gameStart)
+        {
+            while (const std::optional event = window.pollEvent())
+            {
+            if (event->is<sf::Event::Closed>())
+                window.close();
+            if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()) {
+                if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
+                    sf::Vector2f mousePos = window.mapPixelToCoords(mouseButtonPressed->position);
+                    if (playIcon.getGlobalBounds().contains(mousePos))
+                        gameStart = true;
+                }
+            }
+            }
+            window.clear();
+            window.draw(playIcon);
+            finalScore.setString("Best result: " + std::to_string(bestResult));
+            window.draw(finalScore);
+            window.display();
+            continue;
+        }
         while (const std::optional event = window.pollEvent())
         {
             if (event->is<sf::Event::Closed>())
@@ -69,6 +110,7 @@ int main() {
                 }
             }
         }
+        turnsText.setString("Turns: " + std::to_string(cntTurns));
         if (waiting)
         {
             if (win)
@@ -84,6 +126,8 @@ int main() {
                     firstId = -1;
                     secondId = -1;
                     waiting = false;
+                    cntTurns++;
+                    cntWins++;
                 }
             }
             else
@@ -96,6 +140,7 @@ int main() {
                     firstId = -1;
                     secondId = -1;
                     waiting = false;
+                    cntTurns++;
                 }
             }
 
@@ -105,7 +150,19 @@ int main() {
         {
                 mainVec[i].draw(window);
         }
+        window.draw(turnsText);
         window.display();
+        if (cntWins==8) {
+            gameStart = false;
+            cntWins = 0;
+            if (bestResult==0 || cntTurns < bestResult)
+                bestResult = cntTurns;
+            cntTurns = 0;
+            mainVec.clear();
+            fillVector(mainVec,textures,backside);
+            shuffleVector(mainVec);
+            cardsToPositions(mainVec);
+        }
     }
 	return 0;
 }
