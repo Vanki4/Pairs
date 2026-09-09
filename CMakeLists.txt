@@ -19,3 +19,13 @@ target_link_libraries(Pairs PRIVATE
     SFML::Window
     SFML::System
 )
+
+add_custom_command(TARGET Pairs POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/Textures
+    $<TARGET_FILE_DIR:Pairs>/Textures
+
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/Assets
+    $<TARGET_FILE_DIR:Pairs>/Assets
+)
