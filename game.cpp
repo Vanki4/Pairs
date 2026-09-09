@@ -2,25 +2,28 @@
 #include "game.h"
 
 Game::Game() : 
-    window(sf::VideoMode({1200,800}),"Pair game"),
+    window(sf::VideoMode({1280,800}),"Pair game"),
     backside("Textures/backside.png"),
     font("Assets/font.ttf"),
     turnsText(font),
-    finalScore(font)
+    finalScore(font),
+    startScreenBackGround("Textures/background1.jpeg"),
+    gameBackGround("Textures/background2.jpeg"),
+    backGround(startScreenBackGround)
 {
     srand(time(NULL));
     turnsText.setCharacterSize(30);
     turnsText.setFillColor(sf::Color::White);
     turnsText.setPosition({950.f, 100.f});
-    finalScore.setCharacterSize(30);
+    finalScore.setCharacterSize(60);
     finalScore.setFillColor(sf::Color::White);
-    finalScore.setPosition({300.f, 300.f});
+    finalScore.setPosition({50.f, 700.f});
     playIcon.setPointCount(3);
     playIcon.setPoint(0, {0.f, 0.f});
     playIcon.setPoint(1, {0.f, 40.f});
     playIcon.setPoint(2, {35.f, 20.f});
     playIcon.setFillColor(sf::Color::White);
-    playIcon.setPosition({565.f, 365.f});
+    playIcon.setPosition({596.f, 365.f});
 
     loadTextures();
     createCards();
@@ -67,7 +70,10 @@ void Game::processStartScreenEvents() {
             if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
                     sf::Vector2f mousePos = window.mapPixelToCoords(mouseButtonPressed->position);
                     if (playIcon.getGlobalBounds().contains(mousePos))
+                    {
                         gameStart = true;
+                        backGround.setTexture(gameBackGround);
+                    }
             }
         }
     }
@@ -130,7 +136,10 @@ void Game::update() {
     turnsText.setString("Turns: " + std::to_string(cntTurns));
     updateWaitingCards();
     if (cntWins == 8)
+    {
         finishGame();
+        backGround.setTexture(startScreenBackGround);
+    }
 }
 
 void Game::updateWaitingCards() {
@@ -189,6 +198,7 @@ void Game::restartGame() {
 
 void Game::draw() {
     window.clear();
+    window.draw(backGround);
     if (gameStart)
         drawGame();
     else

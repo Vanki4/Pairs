@@ -9,6 +9,9 @@
 
 class Game {
     private:
+    sf::Texture startScreenBackGround;
+    sf::Texture gameBackGround;
+    sf::Sprite backGround;
     sf::RenderWindow window;
     std::vector<Card> cards;
     std::vector<sf::Texture> textures;

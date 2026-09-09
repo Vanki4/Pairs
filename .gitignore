@@ -3,3 +3,5 @@
 sd
 .DS_Store
 .vscode
+.CMakeLists.txt
+build/
