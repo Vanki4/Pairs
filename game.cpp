@@ -76,6 +76,11 @@ void Game::processStartScreenEvents() {
                     }
             }
         }
+        else if (const auto* mouseButtonPressed = event->getIf<sf::Event::KeyPressed>())
+        {
+            gameStart = true;
+            backGround.setTexture(gameBackGround);
+        }
     }
 }
 
