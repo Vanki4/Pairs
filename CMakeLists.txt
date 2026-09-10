@@ -22,7 +22,7 @@ add_executable(Pairs
 )
 
 if (WIN32)
-  target_link_options(snake PRIVATE -mwindows)
+  target_link_options(Pairs PRIVATE -mwindows)
 endif()
 
 target_link_libraries(Pairs PRIVATE
