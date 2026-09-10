@@ -21,6 +21,10 @@ add_executable(Pairs
     gameFunc.cpp
 )
 
+if (WIN32)
+  target_link_options(snake PRIVATE -mwindows)
+endif()
+
 target_link_libraries(Pairs PRIVATE
     SFML::Graphics
     SFML::Window
