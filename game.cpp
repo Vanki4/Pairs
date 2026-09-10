@@ -1,5 +1,6 @@
 #include <string>
 #include "game.h"
+#include <fstream>
 
 Game::Game() : 
     window(sf::VideoMode({1280,800}),"Pair game"),
@@ -46,6 +47,7 @@ void Game::createCards() {
 }
 
 void Game::run() {
+    getBestResult();
     while (window.isOpen())
     {
         processEvents();
@@ -187,6 +189,7 @@ void Game::finishGame() {
     if (bestResult==0 || cntTurns < bestResult)
             bestResult = cntTurns;
     gameStart = false;
+    putBestResult();
     restartGame();
 }
 
@@ -223,4 +226,18 @@ void Game::drawGame() {
                 cards[i].draw(window);
     }
     window.draw(turnsText);
+}
+
+void Game::getBestResult() {
+    std::ifstream data("data.bin", std::ios::binary);
+    int tempResult;
+    data.read(reinterpret_cast<char*>(&tempResult),sizeof(tempResult));
+    data.close();
+    bestResult = tempResult;
+}
+
+void Game::putBestResult() {
+    std::ofstream data("data.bin",std::ios::binary);
+    data.write(reinterpret_cast<char*>(&bestResult),sizeof(bestResult));
+    data.close();
 }

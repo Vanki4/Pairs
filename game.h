@@ -32,6 +32,8 @@ class Game {
     bool win = false;
     bool gameStart = false;
     
+    void getBestResult();
+    void putBestResult();
     void loadTextures();
     void createCards();
     void processEvents();
